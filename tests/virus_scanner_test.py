@@ -4,7 +4,7 @@ from json import loads
 from runner import Runner
 
 
-class TestFreightGlueSetup(unittest.TestCase):
+class TestVirusScanSetup(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.snippet = \
@@ -24,7 +24,7 @@ class TestFreightGlueSetup(unittest.TestCase):
     def test_root_destroy(self):
         self.assertEqual(self.result["destroy"], False)
 
-    def test_lambda_function(self):
+    def test_virus_update_lambda(self):
         self.assertEqual(
             self.result['virus_scanner']['aws_lambda_function.virus_definition_lambda']['handler'],
             'update.lambda_handler'
@@ -36,6 +36,49 @@ class TestFreightGlueSetup(unittest.TestCase):
         self.assertEqual(
             self.result['virus_scanner']['aws_lambda_function.virus_definition_lambda']['filename'],
             './/lambdas/lambda.zip'
+        )
+
+    def test_virus_scan_lambda(self):
+        self.assertEqual(
+            self.result['virus_scanner']['aws_lambda_function.virus_scan_lambda']['handler'],
+            'scan.lambda_handler'
+        )
+        self.assertEqual(
+            self.result['virus_scanner']['aws_lambda_function.virus_scan_lambda']['runtime'],
+            'python2.7'
+        )
+        self.assertEqual(
+            self.result['virus_scanner']['aws_lambda_function.virus_scan_lambda']['filename'],
+            './/lambdas/lambda.zip'
+        )
+
+    def test_cloudwatch_event_rule(self):
+        self.assertEqual(
+            self.result['virus_scanner']['aws_cloudwatch_event_rule.every_three_hours']['schedule_expression'],
+            'rate(3 hours)'
+        )
+
+    def test_cloudwatch_event_target(self):
+        self.assertEqual(
+            self.result['virus_scanner']['aws_cloudwatch_event_target.update_virus_definitions']['target_id'],
+            'virus_definition_lambda'
+        )
+
+    def test_lambda_cloudwatch_permissions(self):
+        self.assertEqual(
+            self.result['virus_scanner']['aws_lambda_permission.allow_cloudwatch_to_call_virus_definition_lambda']['function_name'],
+            'bucket-antivirus-update'
+        )
+
+    def test_virus_scan_bucket_execution(self):
+        self.assertEqual(
+            self.result['virus_scanner']['aws_lambda_permission.allow_virus_scan_bucket_execution']['statement_id'],
+            'AllowExecutionFromS3Bucket'
+        )
+
+        self.assertEqual(
+            self.result['virus_scanner']['aws_lambda_permission.allow_virus_scan_bucket_execution']['action'],
+            'lambda:InvokeFunction'
         )
 
     def test_destroy(self):
