@@ -1,7 +1,28 @@
-resource "aws_iam_role" "virus_scan_role" {
+resource "aws_iam_role" "virus_definition_role" {
   name = "bucket-antivirus-update"
 
   assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "virus_definition_policy" {
+  name = "virus-definition-policy"
+  role = "${aws_iam_role.virus_definition_role.id}"
+
+  policy = <<EOF
 {
    "Version":"2012-10-17",
    "Statement":[
@@ -23,39 +44,17 @@ resource "aws_iam_role" "virus_scan_role" {
             "s3:PutObjectVersionTagging"
          ],
          "Effect":"Allow",
-         "Resource":"arn:aws:s3:::${var.scan_bucket}/*"
+         "Resource":"arn:aws:s3:::${var.virus_definition_bucket}-${var.namespace}/*"
       }
    ]
 }
 EOF
 }
 
-resource "aws_iam_role_policy" "virus_scan_policy" {
-  name = "virus-scan-policy"
-  role = "${aws_iam_role.virus_scan_role.id}"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "s3:*"
-      ],
-      "Effect": "Allow",
-      "Resource": [
-        "arn:aws:s3:::${var.scan_bucket}-${var.namespace}",
-        "arn:aws:s3:::${var.scan_bucket}-${var.namespace}/*"]
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_lambda_function" "virus_scanner_lambda" {
+resource "aws_lambda_function" "virus_definition_lambda" {
  filename         = "lambdas/lambda.zip"
- function_name    = "bucket-antivirus-function"
- role             = "${aws_iam_role.virus_scan_role.arn}"
+ function_name    = "bucket-antivirus-update"
+ role             = "${aws_iam_role.virus_definition_role.arn}"
  handler          = "update.lambda_handler"
  source_code_hash = "${base64sha256("lambdas/lambda.zip")}"
  runtime          = "python2.7"
@@ -64,13 +63,13 @@ resource "aws_lambda_function" "virus_scanner_lambda" {
 
  environment {
    variables = {
-     AV_DEFINITION_S3_BUCKET = "${var.scan_bucket}-${var.namespace}"
+     AV_DEFINITION_S3_BUCKET = "${var.virus_definition_bucket}-${var.namespace}"
    }
  }
 }
 
 resource "aws_cloudwatch_log_group" "virus_scanner_log_group" {
-  name              = "/aws/lambda/${aws_lambda_function.virus_scanner_lambda.function_name}"
+  name              = "/aws/lambda/${aws_lambda_function.virus_definition_lambda.function_name}"
   retention_in_days = 90 
 }
 
