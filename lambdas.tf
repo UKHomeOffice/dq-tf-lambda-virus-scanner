@@ -52,7 +52,7 @@ EOF
 }
 
 resource "aws_lambda_function" "virus_definition_lambda" {
- filename         = "lambdas/lambda.zip"
+ filename         = "${local.path_module}/lambdas/lambda.zip"
  function_name    = "bucket-antivirus-update"
  role             = "${aws_iam_role.virus_definition_role.arn}"
  handler          = "update.lambda_handler"
