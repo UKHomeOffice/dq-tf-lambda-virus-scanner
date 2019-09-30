@@ -38,6 +38,24 @@ class TestFreightGlueSetup(unittest.TestCase):
             './/lambdas/lambda.zip'
         )
 
+    def test_cloudwatch_event_rule(self):
+        self.assertEqual(
+            self.result['virus_scanner']['aws_cloudwatch_event_rule.every_three_hours']['schedule_expression'],
+            'rate(3 hours)'
+        )
+
+    def test_cloudwatch_event_target(self):
+        self.assertEqual(
+            self.result['virus_scanner']['aws_cloudwatch_event_target.update_virus_definitions']['target_id'],
+            'virus_definition_lambda'
+        )
+
+    def test_lambda_cloudwatch_permissions(self):
+        self.assertEqual(
+            self.result['virus_scanner']['aws_lambda_permission.allow_cloudwatch_to_call_virus_definition_lambda']['function_name'],
+            'bucket-antivirus-update'
+        )
+
     def test_destroy(self):
         self.assertEqual(self.result['virus_scanner']["aws_lambda_function.virus_definition_lambda"]["destroy"], False)
 
