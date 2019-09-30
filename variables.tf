@@ -14,8 +14,8 @@ variable "pipeline_name" {
   default = "virus-scan-lambda"
 }
 
-variable "scan_bucket" {
-  default = "s3-dq-scan-bucket"
+variable "virus_definition_bucket" {
+  default = "s3-dq-bfid-virus-definitions"
 }
 
 variable "namespace" {
