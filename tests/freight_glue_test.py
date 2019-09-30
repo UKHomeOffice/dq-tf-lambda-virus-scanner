@@ -25,24 +25,19 @@ class TestFreightGlueSetup(unittest.TestCase):
         self.assertEqual(self.result["destroy"], False)
 
     def test_iam_role(self):
-        policy_dict = loads(self.result['freight_glue']['aws_iam_role.glue']['assume_role_policy'])
+        policy_dict = loads(self.result['virus_scanner']['aws_iam_role.virus_scan_role']['assume_role_policy'])
         self.assertEqual(policy_dict['Statement'][0]['Effect'], 'Allow')
-        self.assertEqual(policy_dict['Statement'][0]['Principal']['Service'], 'glue.amazonaws.com')
-
-    def test_iam_role_policy_attachment(self):
-        self.assertEqual(self.result['freight_glue']['aws_iam_role_policy_attachment.glue_service']['policy_arn'], 'arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole')
 
     def test_aws_iam_role_policy(self):
-        policy_dict = loads(self.result['freight_glue']['aws_iam_role_policy.s3_policy_bucket']['policy'])
+        policy_dict = loads(self.result['virus_scanner']['aws_iam_role_policy.virus_scan_policy']['policy'])
         self.assertEqual(policy_dict['Version'], '2012-10-17')
         self.assertEqual(policy_dict['Statement'][0]['Effect'], 'Allow')
-        self.assertEqual(policy_dict['Statement'][0]['Resource'], ['arn:aws:s3:::s3-dq-freight-archive-test/*'])
 
     def test_destroy(self):
-        self.assertEqual(self.result['freight_glue']["aws_glue_crawler.fast_parcel_crawler"]["destroy"], False)
+        self.assertEqual(self.result['virus_scanner']["aws_lambda_function.virus_scanner_lambda"]["destroy"], False)
 
     def test_destroy_tainted(self):
-        self.assertEqual(self.result['freight_glue']["aws_glue_crawler.fast_parcel_crawler"]["destroy_tainted"], False)
+        self.assertEqual(self.result['freight_glue']["aws_lambda_function.virus_scanner_lambda"]["destroy_tainted"], False)
 
 
 if __name__ == '__main__':
