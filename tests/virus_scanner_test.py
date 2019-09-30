@@ -35,7 +35,7 @@ class TestFreightGlueSetup(unittest.TestCase):
         )
         self.assertEqual(
             self.result['virus_scanner']['aws_lambda_function.virus_definition_lambda']['filename'],
-            'lambdas/lambda.zip'
+            './/lambdas/lambda.zip'
         )
 
     def test_destroy(self):
