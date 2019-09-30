@@ -18,6 +18,10 @@ variable "virus_definition_bucket" {
   default = "s3-dq-bfid-virus-definitions"
 }
 
+variable "virus_scan_bucket" {
+  default = "s3-dq-bfid-virus-scan"
+}
+
 variable "namespace" {
   default = "test"
 }

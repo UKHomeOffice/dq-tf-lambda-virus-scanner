@@ -16,3 +16,20 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_virus_definition_lamb
     principal = "events.amazonaws.com"
     source_arn = "${aws_cloudwatch_event_rule.every_three_hours.arn}"
 }
+
+resource "aws_lambda_permission" "allow_virus_scan_bucket_execution" {
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.virus_scan_lambda.arn}"
+  principal     = "s3.amazonaws.com"
+  source_arn    = "arn:aws:s3:::${var.virus_scan_bucket}-${var.namespace}"
+}
+
+resource "aws_s3_bucket_notification" "virus_scan_lambda_notifications" {
+  bucket = "${var.freight_bucket}-${var.namespace}"
+
+  lambda_function {
+      lambda_function_arn = "${aws_lambda_function.virus_scan_lambda.arn}"
+      events              = ["s3:ObjectCreated:*"]
+  }
+}
