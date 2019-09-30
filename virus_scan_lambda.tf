@@ -44,7 +44,7 @@ resource "aws_iam_role_policy" "virus_scan_policy" {
          ],
          "Effect":"Allow",
          "Resource": [
-           "arn:aws:s3:::${var.virus_scan_bucket}-${var.namespace}/*",
+           "arn:aws:s3:::${var.virus_scan_bucket}-${var.namespace}/*"
          ]
       },
       {
@@ -63,7 +63,7 @@ resource "aws_iam_role_policy" "virus_scan_policy" {
          ],
          "Effect":"Allow",
          "Resource": [
-           "arn:aws:s3:::${var.virus_scan_bucket}-${var.namespace}/*",
+           "arn:aws:s3:::${var.virus_scan_bucket}-${var.namespace}/*"
          ]
       }
    ]

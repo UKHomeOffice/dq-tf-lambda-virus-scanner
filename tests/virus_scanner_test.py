@@ -4,7 +4,7 @@ from json import loads
 from runner import Runner
 
 
-class TestFreightGlueSetup(unittest.TestCase):
+class TestVirusScanSetup(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.snippet = \

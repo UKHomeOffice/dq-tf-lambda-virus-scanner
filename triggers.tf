@@ -26,7 +26,7 @@ resource "aws_lambda_permission" "allow_virus_scan_bucket_execution" {
 }
 
 resource "aws_s3_bucket_notification" "virus_scan_lambda_notifications" {
-  bucket = "${var.freight_bucket}-${var.namespace}"
+  bucket = "${var.virus_scan_bucket}-${var.namespace}"
 
   lambda_function {
       lambda_function_arn = "${aws_lambda_function.virus_scan_lambda.arn}"
