@@ -40,7 +40,8 @@ resource "aws_iam_role_policy" "virus_scan_policy" {
             "s3:GetObject",
             "s3:GetObjectTagging",
             "s3:PutObjectTagging",
-            "s3:PutObjectVersionTagging"
+            "s3:PutObjectVersionTagging",
+            "s3:DeleteObject"
          ],
          "Effect":"Allow",
          "Resource": [
