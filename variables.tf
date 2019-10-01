@@ -28,7 +28,7 @@ variable "namespace" {
 
 variable "delete_infected_files" {
   description = "Determines whether infected files should be automatically deleted or not"
-  default     = "False"
+  default     = "True"
 }
 
 variable "process_original_version_only" {
