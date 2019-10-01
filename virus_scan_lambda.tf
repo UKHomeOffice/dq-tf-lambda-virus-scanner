@@ -83,14 +83,16 @@ resource "aws_lambda_function" "virus_scan_lambda" {
 
  environment {
    variables = {
-     AV_DEFINITION_S3_BUCKET = "${var.virus_definition_bucket}-${var.namespace}"
+     AV_DEFINITION_S3_BUCKET            = "${var.virus_definition_bucket}-${var.namespace}"
+     AV_DELETE_INFECTED_FILES           = "${var.delete_infected_files}"
+     AV_PROCESS_ORIGINAL_VERSION_ONLY   = "${var.process_original_version_only}"
    }
  }
 }
 
 resource "aws_cloudwatch_log_group" "virus_scan_log_group" {
   name              = "/aws/lambda/${aws_lambda_function.virus_scan_lambda.function_name}"
-  retention_in_days = 90 
+  retention_in_days = 90
 }
 
 resource "aws_iam_policy" "virus_scan_policy" {
